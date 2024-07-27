@@ -66,10 +66,14 @@ button {
   position: absolute;
   width: 50px;
   height: 50px;
-  background-color: rgba(255, 0, 0, 0.7);
+  background-color: rgba(0, 0, 255, 0.7); /* Default color for blue points */
   border-radius: 50%;
   cursor: pointer;
   transform-origin: top left;
+}
+
+.point.red {
+  background-color: rgba(255, 0, 0, 0.7); /* Red color for red points */
 }
 
 .modal {
@@ -98,8 +102,20 @@ button {
   transform: translate(-50%, -50%);
   width: 80%;
   max-width: 700px;
-  background: none;
+  background: none; /* Default no background for video modal */
   text-align: center;
+  color: white;
+}
+
+.modal-content.text-modal {
+  background: rgba(0, 0, 0, 0.5); /* Add background for text modal */
+}
+
+.video-title {
+  color: #fff;
+  font-size: 24px;
+  margin-bottom: 10px;
+  padding: 10px;
 }
 
 .modal video {
@@ -108,10 +124,10 @@ button {
   object-fit: contain;
 }
 
-.video-title {
+.modal-text {
   color: #fff;
-  font-size: 24px;
-  margin-bottom: 10px;
+  font-size: 18px;
+  margin-top: 10px;
 }
 
 .close {
