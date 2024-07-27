@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Одностраничный сайт</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header>
+      <img src="images/title_klewiha.png" alt="Company Logo" class="logo" />
+    </header>
+    <main>
+      <div class="controls">
+        <button id="zoom-in">+</button>
+        <button id="zoom-out">-</button>
+      </div>
+      <div id="map-container">
+        <div id="video-wrapper">
+          <video autoplay muted loop id="background-video">
+            <source src="images/cam001.mp4" type="video/mp4" />
+          </video>
+          <div
+            class="point"
+            data-x="30"
+            data-y="30"
+            data-video="https://videos.pexels.com/video-files/27382715/12130634_2808_1440_60fps.mp4"
+            data-title="Административно-бытовой комплекс"
+          ></div>
+          <div
+            class="point"
+            data-x="50"
+            data-y="50"
+            data-video="https://videos.pexels.com/video-files/27353762/12122011_1920_1080_24fps.mp4"
+            data-title="Выставочный парк"
+          ></div>
+          <div
+            class="point"
+            data-x="70"
+            data-y="70"
+            data-video="https://videos.pexels.com/video-files/26890034/12027278_2560_1440_30fps.mp4"
+            data-title="Сток"
+          ></div>
+        </div>
+      </div>
+    </main>
+    <div id="modal" class="modal">
+      <div class="modal-overlay"></div>
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2 id="video-title" class="video-title"></h2>
+        <video id="modal-video" loop></video>
+      </div>
+    </div>
+    <audio id="click-sound" src="images/zvuk11.mp3"></audio>
+    <script src="script.js"></script>
+  </body>
+</html>
