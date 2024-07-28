@@ -37,6 +37,9 @@ document.addEventListener("DOMContentLoaded", () => {
         modalVideo.src = videoSrc;
         modalVideo.style.display = "block";
         modalText.style.display = "none";
+        modalVideo.play().catch((error) => {
+          console.error("Error attempting to play the video:", error);
+        });
       } else {
         modalContent.classList.remove("video-modal");
         modalContent.classList.add("text-modal");
@@ -45,9 +48,6 @@ document.addEventListener("DOMContentLoaded", () => {
         modalText.textContent = text;
       }
       modal.classList.add("show");
-      if (modalVideo.style.display === "block") {
-        modalVideo.play();
-      }
     });
   });
 
