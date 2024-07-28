@@ -33,16 +33,18 @@ document.addEventListener("DOMContentLoaded", () => {
       videoTitle.textContent = title;
       if (videoSrc) {
         modalContent.classList.remove("text-modal");
+        modalContent.classList.add("video-modal");
         modalVideo.src = videoSrc;
         modalVideo.style.display = "block";
         modalText.style.display = "none";
       } else {
+        modalContent.classList.remove("video-modal");
         modalContent.classList.add("text-modal");
         modalVideo.style.display = "none";
         modalText.style.display = "block";
         modalText.textContent = text;
       }
-      modal.style.display = "block";
+      modal.classList.add("show");
       if (modalVideo.style.display === "block") {
         modalVideo.play();
       }
@@ -50,14 +52,14 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   closeBtn.addEventListener("click", () => {
-    modal.style.display = "none";
+    modal.classList.remove("show");
     modalVideo.pause();
     modalVideo.src = "";
     modalText.textContent = "";
   });
 
   modalOverlay.addEventListener("click", () => {
-    modal.style.display = "none";
+    modal.classList.remove("show");
     modalVideo.pause();
     modalVideo.src = "";
     modalText.textContent = "";

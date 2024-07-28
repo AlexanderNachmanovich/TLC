@@ -26,9 +26,12 @@ main {
 
 .controls {
   position: absolute;
-  top: 10px;
+  top: 50%;
   right: 10px;
+  transform: translateY(-50%);
   z-index: 20;
+  display: flex;
+  flex-direction: column;
 }
 
 button {
@@ -37,6 +40,14 @@ button {
   padding: 10px;
   font-size: 18px;
   cursor: pointer;
+  border-radius: 10px; /* Закругление углов */
+  border: none; /* Удаление рамки */
+  background-color: #ff5c5c; /* Цвет кнопок */
+  color: white; /* Белый цвет текста */
+}
+
+button:hover {
+  background-color: #cc4a4a; /* Затемнение при наведении */
 }
 
 #map-container {
@@ -67,21 +78,28 @@ button {
 
 .point {
   position: absolute;
-  width: 50px;
-  height: 50px;
   cursor: pointer;
   transform-origin: top left;
   background-size: contain;
   background-repeat: no-repeat;
+  transition:
+    transform 0.3s ease,
+    filter 0.3s ease; /* Анимация при наведении */
+}
+
+.point:hover {
+  filter: brightness(0.8); /* Затемнение при наведении */
 }
 
 .point.red {
-  width: 75px;
+  width: 90px; /* Точки с видео на 20% больше */
+  height: 90px;
   background-image: url("./images/free-icon-location-8215294.png");
 }
 
 .point.blue {
   width: 50px;
+  height: 50px;
   background-image: url("./images/free-icon-location-8215294.png");
 }
 
@@ -94,6 +112,13 @@ button {
   width: 100%;
   height: 100%;
   background: rgba(0, 0, 0, 0.8);
+  opacity: 0;
+  transition: opacity 0.5s ease; /* Плавный переход прозрачности */
+}
+
+.modal.show {
+  display: block;
+  opacity: 1; /* Видимость модального окна */
 }
 
 .modal-overlay {
@@ -111,13 +136,24 @@ button {
   transform: translate(-50%, -50%);
   width: 80%;
   max-width: 700px;
-  background: none; /* Default no background for video modal */
   text-align: center;
   color: white;
+  border-radius: 10px; /* Закругление углов */
+  padding: 20px;
+  opacity: 0;
+  transition: opacity 0.5s ease; /* Плавный переход прозрачности */
+}
+
+.modal.show .modal-content {
+  opacity: 1; /* Видимость контента модального окна */
+}
+
+.modal-content.video-modal {
+  background: transparent; /* Прозрачный фон для видео модального окна */
 }
 
 .modal-content.text-modal {
-  background: rgba(0, 0, 0, 0.5); /* Add background for text modal */
+  background: rgba(0, 0, 0, 0.8); /* Фон для модального окна с текстом */
 }
 
 .video-title {
@@ -157,11 +193,18 @@ button {
 
 @media (max-width: 768px) {
   #map-container {
-    overflow: auto;
+    overflow-x: auto; /* Прокрутка только по горизонтали */
+    overflow-y: hidden; /* Отключение вертикальной прокрутки */
   }
 
   #video-wrapper {
-    width: 150%;
-    height: auto;
+    width: 200%; /* Увеличить ширину для демонстрации прокрутки */
+    height: 100%; /* Высота 100% */
+  }
+
+  #background-video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
   }
 }
