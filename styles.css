@@ -5,14 +5,16 @@ body {
 }
 
 header {
-  position: absolute;
+  position: fixed;
   top: 10px;
   left: 10px;
   z-index: 10;
 }
 
 .logo {
-  width: 20vw;
+  position: absolute;
+  width: 40vw;
+  max-width: 30vw;
 }
 
 main {
@@ -45,6 +47,7 @@ button {
   height: 100%;
   overflow: hidden;
   cursor: grab;
+  touch-action: pan-x pan-y;
 }
 
 #video-wrapper {
@@ -66,14 +69,20 @@ button {
   position: absolute;
   width: 50px;
   height: 50px;
-  background-color: rgba(0, 0, 255, 0.7); /* Default color for blue points */
-  border-radius: 50%;
   cursor: pointer;
   transform-origin: top left;
+  background-size: contain;
+  background-repeat: no-repeat;
 }
 
 .point.red {
-  background-color: rgba(255, 0, 0, 0.7); /* Red color for red points */
+  width: 75px;
+  background-image: url("./images/free-icon-location-8215294.png");
+}
+
+.point.blue {
+  width: 50px;
+  background-image: url("./images/free-icon-location-8215294.png");
 }
 
 .modal {
@@ -149,5 +158,10 @@ button {
 @media (max-width: 768px) {
   #map-container {
     overflow: auto;
+  }
+
+  #video-wrapper {
+    width: 150%;
+    height: auto;
   }
 }

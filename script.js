@@ -14,6 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const zoomInBtn = document.getElementById("zoom-in");
   const zoomOutBtn = document.getElementById("zoom-out");
   let scale = 1;
+  const maxScale = 1.8; // Максимальное увеличение до 80%
   const scaleFactor = 0.2;
   let isDragging = false;
   let startX, startY, initialX, initialY;
@@ -63,7 +64,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   zoomInBtn.addEventListener("click", () => {
-    scale += scaleFactor;
+    scale = Math.min(maxScale, scale + scaleFactor);
     updateScale(mapContainer.clientWidth / 2, mapContainer.clientHeight / 2);
   });
 
@@ -75,7 +76,7 @@ document.addEventListener("DOMContentLoaded", () => {
   mapContainer.addEventListener("wheel", (e) => {
     e.preventDefault();
     const zoomFactor = e.deltaY < 0 ? scaleFactor : -scaleFactor;
-    scale = Math.max(1, scale + zoomFactor);
+    scale = Math.min(maxScale, Math.max(1, scale + zoomFactor));
     const rect = videoWrapper.getBoundingClientRect();
     const offsetX = (e.clientX - rect.left) / rect.width;
     const offsetY = (e.clientY - rect.top) / rect.height;
@@ -100,6 +101,13 @@ document.addEventListener("DOMContentLoaded", () => {
       x2 = touches[1].clientX;
       y2 = touches[1].clientY;
       initialDistance = getDistance(x1, y1, x2, y2);
+    } else if (touches.length === 1) {
+      isDragging = true;
+      startX = touches[0].clientX;
+      startY = touches[0].clientY;
+      initialX = videoWrapper.offsetLeft;
+      initialY = videoWrapper.offsetTop;
+      mapContainer.style.cursor = "grabbing";
     }
   }
 
@@ -114,8 +122,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (initialDistance) {
         const zoomFactor =
-          newDistance > initialDistance ? scaleFactor : -scaleFactor;
-        scale = Math.max(1, scale + zoomFactor);
+          ((newDistance - initialDistance) / initialDistance) * scaleFactor;
+        scale = Math.min(maxScale, Math.max(1, scale + zoomFactor));
         const midX = (newX1 + newX2) / 2;
         const midY = (newY1 + newY2) / 2;
         const rect = videoWrapper.getBoundingClientRect();
@@ -124,6 +132,12 @@ document.addEventListener("DOMContentLoaded", () => {
         updateScale(midX, midY, offsetX, offsetY);
         initialDistance = newDistance;
       }
+    } else if (touches.length === 1 && isDragging) {
+      const x = touches[0].clientX - startX + initialX;
+      const y = touches[0].clientY - startY + initialY;
+      videoWrapper.style.left = `${x}px`;
+      videoWrapper.style.top = `${y}px`;
+      constrainMap();
     }
   }
 
@@ -133,6 +147,8 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
     lastTouchEnd = e.timeStamp;
+    isDragging = false;
+    mapContainer.style.cursor = "grab";
   }
 
   function getDistance(x1, y1, x2, y2) {
