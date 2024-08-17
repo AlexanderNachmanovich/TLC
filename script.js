@@ -19,7 +19,6 @@ document.addEventListener("DOMContentLoaded", () => {
   let isDragging = false;
   let startX, startY, initialX, initialY;
 
-  // Отключаем стандартное поведение перетаскивания изображения
   imageWrapper.addEventListener("dragstart", (e) => {
     e.preventDefault();
   });
@@ -99,6 +98,33 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   mapContainer.addEventListener("mouseleave", () => {
+    isDragging = false;
+    mapContainer.style.cursor = "grab";
+  });
+
+  // Обработка касаний для мобильных устройств
+  mapContainer.addEventListener("touchstart", (e) => {
+    if (e.touches.length === 1) {
+      isDragging = true;
+      startX = e.touches[0].clientX;
+      startY = e.touches[0].clientY;
+      initialX = imageWrapper.offsetLeft;
+      initialY = imageWrapper.offsetTop;
+      mapContainer.style.cursor = "grabbing";
+    }
+  });
+
+  mapContainer.addEventListener("touchmove", (e) => {
+    if (isDragging && e.touches.length === 1) {
+      const x = e.touches[0].clientX - startX + initialX;
+      const y = e.touches[0].clientY - startY + initialY;
+      imageWrapper.style.left = `${x}px`;
+      imageWrapper.style.top = `${y}px`;
+      restrictPan();
+    }
+  });
+
+  mapContainer.addEventListener("touchend", () => {
     isDragging = false;
     mapContainer.style.cursor = "grab";
   });
