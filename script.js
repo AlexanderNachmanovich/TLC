@@ -89,6 +89,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const y = e.clientY - startY + initialY;
       imageWrapper.style.left = `${x}px`;
       imageWrapper.style.top = `${y}px`;
+      restrictPan();
     }
   });
 
@@ -104,46 +105,56 @@ document.addEventListener("DOMContentLoaded", () => {
 
   zoomInBtn.addEventListener("click", () => {
     scale = Math.min(maxScale, scale + scaleFactor);
-    imageWrapper.style.transformOrigin = "center center";
-    imageWrapper.style.transform = `scale(${scale})`;
+    updateTransform();
   });
 
   zoomOutBtn.addEventListener("click", () => {
     scale = Math.max(1, scale - scaleFactor);
-    imageWrapper.style.transformOrigin = "center center";
-    imageWrapper.style.transform = `scale(${scale})`;
+    updateTransform();
   });
 
   mapContainer.addEventListener("wheel", (e) => {
-    e.preventDefault();
-    const zoomFactor = e.deltaY < 0 ? scaleFactor : -scaleFactor;
-    scale = Math.min(maxScale, Math.max(1, scale + zoomFactor));
-    imageWrapper.style.transformOrigin = "center center";
-    imageWrapper.style.transform = `scale(${scale})`;
-  });
-
-  mapContainer.addEventListener("touchstart", (e) => {
-    if (e.touches.length === 1) {
-      isDragging = true;
-      startX = e.touches[0].clientX;
-      startY = e.touches[0].clientY;
-      initialX = imageWrapper.offsetLeft;
-      initialY = imageWrapper.offsetTop;
-      mapContainer.style.cursor = "grabbing";
+    if (e.deltaY < 0) {
+      scale = Math.min(maxScale, scale + scaleFactor);
+    } else {
+      scale = Math.max(1, scale - scaleFactor);
     }
+    updateTransform();
   });
 
-  mapContainer.addEventListener("touchmove", (e) => {
-    if (e.touches.length === 1 && isDragging) {
-      const x = e.touches[0].clientX - startX + initialX;
-      const y = e.touches[0].clientY - startY + initialY;
-      imageWrapper.style.left = `${x}px`;
-      imageWrapper.style.top = `${y}px`;
+  function updateTransform() {
+    imageWrapper.style.transform = `translate(-50%, -50%) scale(${scale})`;
+    restrictPan();
+  }
+
+  function restrictPan() {
+    const containerRect = mapContainer.getBoundingClientRect();
+    const wrapperRect = imageWrapper.getBoundingClientRect();
+
+    let offsetX = 0;
+    let offsetY = 0;
+
+    if (wrapperRect.left > containerRect.left) {
+      offsetX = containerRect.left - wrapperRect.left;
     }
-  });
+    if (wrapperRect.right < containerRect.right) {
+      offsetX = containerRect.right - wrapperRect.right;
+    }
+    if (wrapperRect.top > containerRect.top) {
+      offsetY = containerRect.top - wrapperRect.top;
+    }
+    if (wrapperRect.bottom < containerRect.bottom) {
+      offsetY = containerRect.bottom - wrapperRect.bottom;
+    }
 
-  mapContainer.addEventListener("touchend", () => {
-    isDragging = false;
-    mapContainer.style.cursor = "grab";
-  });
+    imageWrapper.style.left = `${
+      parseFloat(imageWrapper.style.left) + offsetX
+    }px`;
+    imageWrapper.style.top = `${
+      parseFloat(imageWrapper.style.top) + offsetY
+    }px`;
+  }
+
+  // Инициализация масштабирования и позиционирования
+  updateTransform();
 });

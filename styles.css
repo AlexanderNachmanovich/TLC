@@ -56,25 +56,27 @@ button:hover {
   left: 0;
   width: 100%;
   height: 100%;
-  overflow: hidden;
+  overflow: hidden; /* Скрывает всё, что выходит за пределы контейнера */
   cursor: grab;
   touch-action: pan-x pan-y;
 }
 
 #image-wrapper {
   position: absolute;
-  top: 0;
-  left: 0;
+  top: 50%;
+  left: 50%;
   width: 100%;
   height: 100%;
-  transform-origin: top left;
+  transform-origin: center center; /* Центрирует масштабирование */
+  transform: translate(-50%, -50%); /* Центрирует изображение */
+  transition: transform 0.3s ease;
+  overflow: hidden; /* Скрывает всё, что выходит за пределы контейнера */
 }
 
 #background-image {
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  cursor: grab;
+  object-fit: cover; /* Заполняет контейнер с сохранением пропорций */
 }
 
 .point {
@@ -199,7 +201,7 @@ button:hover {
   }
 
   #image-wrapper {
-    width: 200%;
+    width: auto;
     height: 100%;
   }
 
