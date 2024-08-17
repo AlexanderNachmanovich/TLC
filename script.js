@@ -18,6 +18,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const scaleFactor = 0.2;
   let isDragging = false;
   let startX, startY, initialX, initialY;
+  let initialDistance = null;
 
   imageWrapper.addEventListener("dragstart", (e) => {
     e.preventDefault();
@@ -102,7 +103,7 @@ document.addEventListener("DOMContentLoaded", () => {
     mapContainer.style.cursor = "grab";
   });
 
-  // Обработка касаний для мобильных устройств
+  // Добавление поддержки жестов pinch для увеличения и уменьшения
   mapContainer.addEventListener("touchstart", (e) => {
     if (e.touches.length === 1) {
       isDragging = true;
@@ -111,42 +112,68 @@ document.addEventListener("DOMContentLoaded", () => {
       initialX = imageWrapper.offsetLeft;
       initialY = imageWrapper.offsetTop;
       mapContainer.style.cursor = "grabbing";
+    } else if (e.touches.length === 2) {
+      isDragging = false;
+      initialDistance = getDistance(e.touches[0], e.touches[1]);
     }
   });
 
   mapContainer.addEventListener("touchmove", (e) => {
-    if (isDragging && e.touches.length === 1) {
+    if (e.touches.length === 1 && isDragging) {
       const x = e.touches[0].clientX - startX + initialX;
       const y = e.touches[0].clientY - startY + initialY;
       imageWrapper.style.left = `${x}px`;
       imageWrapper.style.top = `${y}px`;
       restrictPan();
+    } else if (e.touches.length === 2 && initialDistance) {
+      const currentDistance = getDistance(e.touches[0], e.touches[1]);
+      if (currentDistance > initialDistance + 10) {
+        zoomIn();
+        initialDistance = currentDistance;
+      } else if (currentDistance < initialDistance - 10) {
+        zoomOut();
+        initialDistance = currentDistance;
+      }
     }
   });
 
   mapContainer.addEventListener("touchend", () => {
     isDragging = false;
     mapContainer.style.cursor = "grab";
+    initialDistance = null;
   });
 
   zoomInBtn.addEventListener("click", () => {
-    scale = Math.min(maxScale, scale + scaleFactor);
-    updateTransform();
+    zoomIn();
   });
 
   zoomOutBtn.addEventListener("click", () => {
-    scale = Math.max(1, scale - scaleFactor);
-    updateTransform();
+    zoomOut();
   });
 
   mapContainer.addEventListener("wheel", (e) => {
     if (e.deltaY < 0) {
-      scale = Math.min(maxScale, scale + scaleFactor);
+      zoomIn();
     } else {
-      scale = Math.max(1, scale - scaleFactor);
+      zoomOut();
     }
-    updateTransform();
   });
+
+  function getDistance(touch1, touch2) {
+    const dx = touch1.clientX - touch2.clientX;
+    const dy = touch1.clientY - touch2.clientY;
+    return Math.sqrt(dx * dx + dy * dy);
+  }
+
+  function zoomIn() {
+    scale = Math.min(maxScale, scale + scaleFactor);
+    updateTransform();
+  }
+
+  function zoomOut() {
+    scale = Math.max(1, scale - scaleFactor);
+    updateTransform();
+  }
 
   function updateTransform() {
     imageWrapper.style.transform = `translate(-50%, -50%) scale(${scale})`;
