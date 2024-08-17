@@ -8,8 +8,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const modalText = document.getElementById("modal-text");
   const closeBtn = document.querySelector(".close");
   const clickSound = document.getElementById("click-sound");
-  const backgroundVideo = document.getElementById("background-video");
-  const videoWrapper = document.getElementById("video-wrapper");
+  const imageWrapper = document.getElementById("image-wrapper");
   const mapContainer = document.getElementById("map-container");
   const zoomInBtn = document.getElementById("zoom-in");
   const zoomOutBtn = document.getElementById("zoom-out");
@@ -71,20 +70,20 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!canZoom) return;
     scale = Math.min(maxScale, scale + scaleFactor);
     updateScale();
-    canZoom = false; // Блокируем дальнейшее увеличение на полсекунды
+    canZoom = false; // Блокируем дальнейшее увеличение на 0.2 секунды
     setTimeout(() => {
       canZoom = true;
-    }, 500);
+    }, 200);
   });
 
   zoomOutBtn.addEventListener("click", () => {
     if (!canZoom) return;
     scale = Math.max(1, scale - scaleFactor);
     updateScale();
-    canZoom = false; // Блокируем дальнейшее уменьшение на полсекунды
+    canZoom = false; // Блокируем дальнейшее уменьшение на 0.2 секунды
     setTimeout(() => {
       canZoom = true;
-    }, 500);
+    }, 200);
   });
 
   mapContainer.addEventListener("wheel", (e) => {
@@ -93,30 +92,29 @@ document.addEventListener("DOMContentLoaded", () => {
     const zoomFactor = e.deltaY < 0 ? scaleFactor : -scaleFactor;
     scale = Math.min(maxScale, Math.max(1, scale + zoomFactor));
     updateScale();
-    canZoom = false; // Блокируем дальнейшее увеличение/уменьшение на полсекунды
+    canZoom = false; // Блокируем дальнейшее увеличение/уменьшение на 0.2 секунды
     setTimeout(() => {
       canZoom = true;
-    }, 500);
+    }, 200);
   });
 
   function updateScale() {
-    const rect = videoWrapper.getBoundingClientRect();
+    const rect = mapContainer.getBoundingClientRect();
     const newWidth = rect.width * scale;
     const newHeight = rect.height * scale;
-    videoWrapper.style.transform = `scale(${scale})`;
+    imageWrapper.style.transform = `scale(${scale})`;
 
     // Центрирование по середине контейнера
-    const offsetX = (mapContainer.clientWidth - newWidth) / 2;
-    const offsetY = (mapContainer.clientHeight - newHeight) / 2;
-    videoWrapper.style.left = `${offsetX}px`;
-    videoWrapper.style.top = `${offsetY}px`;
+    const offsetX = (rect.width - newWidth) / 2;
+    const offsetY = (rect.height - newHeight) / 2;
+    imageWrapper.style.left = `${offsetX}px`;
+    imageWrapper.style.top = `${offsetY}px`;
 
     points.forEach((point) => {
       const x = parseFloat(point.getAttribute("data-x"));
       const y = parseFloat(point.getAttribute("data-y"));
       setPosition(point, x, y);
     });
-    constrainMap();
   }
 
   function setPosition(point, x, y) {
@@ -124,29 +122,12 @@ document.addEventListener("DOMContentLoaded", () => {
     point.style.top = `${y}%`;
   }
 
-  function constrainMap() {
-    const rect = mapContainer.getBoundingClientRect();
-    const videoRect = videoWrapper.getBoundingClientRect();
-    if (videoRect.left > rect.left) {
-      videoWrapper.style.left = "0";
-    }
-    if (videoRect.top > rect.top) {
-      videoWrapper.style.top = "0";
-    }
-    if (videoRect.right < rect.right) {
-      videoWrapper.style.left = `${rect.width - videoRect.width}px`;
-    }
-    if (videoRect.bottom < rect.bottom) {
-      videoWrapper.style.top = `${rect.height - videoRect.height}px`;
-    }
-  }
-
   mapContainer.addEventListener("mousedown", (e) => {
     isDragging = true;
     startX = e.clientX;
     startY = e.clientY;
-    initialX = videoWrapper.offsetLeft;
-    initialY = videoWrapper.offsetTop;
+    initialX = imageWrapper.offsetLeft;
+    initialY = imageWrapper.offsetTop;
     mapContainer.style.cursor = "grabbing";
   });
 
@@ -154,9 +135,8 @@ document.addEventListener("DOMContentLoaded", () => {
     if (isDragging) {
       const x = e.clientX - startX + initialX;
       const y = e.clientY - startY + initialY;
-      videoWrapper.style.left = `${x}px`;
-      videoWrapper.style.top = `${y}px`;
-      constrainMap();
+      imageWrapper.style.left = `${x}px`;
+      imageWrapper.style.top = `${y}px`;
     }
   });
 
@@ -192,8 +172,8 @@ document.addEventListener("DOMContentLoaded", () => {
       isDragging = true;
       startX = touches[0].clientX;
       startY = touches[0].clientY;
-      initialX = videoWrapper.offsetLeft;
-      initialY = videoWrapper.offsetTop;
+      initialX = imageWrapper.offsetLeft;
+      initialY = imageWrapper.offsetTop;
       mapContainer.style.cursor = "grabbing";
     }
   }
@@ -217,9 +197,8 @@ document.addEventListener("DOMContentLoaded", () => {
     } else if (touches.length === 1 && isDragging) {
       const x = touches[0].clientX - startX + initialX;
       const y = touches[0].clientY - startY + initialY;
-      videoWrapper.style.left = `${x}px`;
-      videoWrapper.style.top = `${y}px`;
-      constrainMap();
+      imageWrapper.style.left = `${x}px`;
+      imageWrapper.style.top = `${y}px`;
     }
   }
 

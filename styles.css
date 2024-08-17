@@ -61,7 +61,7 @@ button:hover {
   touch-action: pan-x pan-y;
 }
 
-#video-wrapper {
+#image-wrapper {
   position: absolute;
   top: 0;
   left: 0;
@@ -70,7 +70,7 @@ button:hover {
   transform-origin: top left;
 }
 
-#background-video {
+#background-image {
   width: 100%;
   height: 100%;
   object-fit: cover;
