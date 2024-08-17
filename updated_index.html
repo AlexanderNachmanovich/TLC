@@ -16,31 +16,29 @@
         <button id="zoom-out">-</button>
       </div>
       <div id="map-container">
-        <div id="image-wrapper">
-          <img
-            src="images/Logoper_0006.png"
-            id="background-image"
-            alt="Background Image"
-          />
+        <div id="video-wrapper">
+          <img src="images/background.png" id="background-image" alt="Background Image">
+            <source src="images/cam001.mp4" type="video/mp4" />
+          
           <div
             class="point red"
             data-x="30"
             data-y="30"
-            data-video-file="01-Cam_Park.mp4"
+            data-video="https://world.delo-group.ru/images/transcont/kleshiha/cam003_kp4.mp4?"
             data-title="Административно-бытовой комплекс"
           ></div>
           <div
             class="point red"
             data-x="50"
             data-y="50"
-            data-video-file="02-Cam_Stock.mp4"
+            data-video="https://world.delo-group.ru/images/transcont/kleshiha/cam005_kp2.mp4?v=2"
             data-title="Выставочный парк"
           ></div>
           <div
             class="point red"
             data-x="70"
             data-y="70"
-            data-video-file="03-Cam_ABK.mp4"
+            data-video="https://world.delo-group.ru/images/transcont/kleshiha/cam002_kp5.mp4?v=2"
             data-title="Сток"
           ></div>
           <div
@@ -79,7 +77,7 @@
       <div class="modal-content">
         <span class="close">&times;</span>
         <h2 id="video-title" class="video-title"></h2>
-        <video id="modal-video" loop playsinline></video>
+        <video id="modal-video" loop playsinline>
         <p id="modal-text" class="modal-text"></p>
       </div>
     </div>
