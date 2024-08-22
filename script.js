@@ -13,7 +13,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const zoomInBtn = document.getElementById("zoom-in");
   const zoomOutBtn = document.getElementById("zoom-out");
 
-  let scale = 1;
+  // Установка начального масштаба в зависимости от ширины экрана
+  let scale = window.innerWidth > 768 ? 0.5 : 1;
+  const minScale = window.innerWidth > 768 ? 0.5 : 1;
   const maxScale = 1.8;
   const scaleFactor = 0.2;
   let isDragging = false;
@@ -56,18 +58,19 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   closeBtn.addEventListener("click", () => {
-    modal.classList.remove("show");
-    modalVideo.pause();
-    modalVideo.src = "";
-    modalText.textContent = "";
+    closeModal();
   });
 
   modalOverlay.addEventListener("click", () => {
+    closeModal();
+  });
+
+  function closeModal() {
     modal.classList.remove("show");
     modalVideo.pause();
     modalVideo.src = "";
     modalText.textContent = "";
-  });
+  }
 
   function setPosition(point, x, y) {
     point.style.left = `${x}%`;
@@ -103,7 +106,6 @@ document.addEventListener("DOMContentLoaded", () => {
     mapContainer.style.cursor = "grab";
   });
 
-  // Добавление поддержки жестов pinch для увеличения и уменьшения
   mapContainer.addEventListener("touchstart", (e) => {
     if (e.touches.length === 1) {
       isDragging = true;
@@ -171,7 +173,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function zoomOut() {
-    scale = Math.max(1, scale - scaleFactor);
+    scale = Math.max(minScale, scale - scaleFactor);
     updateTransform();
   }
 
@@ -208,6 +210,5 @@ document.addEventListener("DOMContentLoaded", () => {
     }px`;
   }
 
-  // Инициализация масштабирования и позиционирования
   updateTransform();
 });
