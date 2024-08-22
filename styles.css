@@ -1,6 +1,13 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
 body {
   margin: 0;
   font-family: Arial, sans-serif;
+  height: 100%;
   overflow: hidden;
 }
 
@@ -15,6 +22,7 @@ header {
   position: absolute;
   width: 40vw;
   max-width: 30vw;
+  pointer-events: none;
 }
 
 main {
@@ -55,7 +63,7 @@ button:hover {
   top: 0;
   left: 0;
   width: 100%;
-  height: 100%;
+  min-height: 100vh;
   overflow: hidden;
   cursor: grab;
   touch-action: pan-x pan-y;
@@ -63,6 +71,7 @@ button:hover {
 
 #image-wrapper {
   position: absolute;
+  min-height: 100vh;
   top: 50%;
   left: 50%;
   transform-origin: center center;
@@ -79,7 +88,7 @@ button:hover {
 .point {
   position: absolute;
   cursor: pointer;
-  transform-origin: top left;
+  transform-origin: center center;
   background-size: contain;
   background-repeat: no-repeat;
   transition:
@@ -92,14 +101,14 @@ button:hover {
 }
 
 .point.red {
-  width: 4.5vw;
-  height: 4.5vw;
+  width: 6vw; /* Увеличим размер для точек с видео */
+  height: 6vw;
   background-image: url("./images/Point_20-08.png");
 }
 
 .point.blue {
-  width: 50px;
-  height: 50px;
+  width: 4vw; /* Уменьшим размер для точек с текстом */
+  height: 4vw;
   background-image: url("./images/Point_20-08.png");
 }
 
@@ -138,8 +147,10 @@ button:hover {
   max-width: 700px;
   text-align: center;
   color: white;
-  border-radius: 10px;
+  border-radius: 15px;
   padding: 20px;
+  background: rgba(0, 0, 0, 0.85);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
   opacity: 0;
   transition: opacity 0.5s ease;
 }
@@ -148,19 +159,37 @@ button:hover {
   opacity: 1;
 }
 
+.modal-content h2 {
+  color: #fff;
+  font-size: 28px;
+  margin-bottom: 15px;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.modal-content p {
+  color: #ddd;
+  font-size: 18px;
+  margin-top: 15px;
+}
+
+.modal-content .modal-text {
+  margin-top: 10px;
+}
+
+.modal-content img {
+  max-width: 100%;
+  height: auto;
+  margin-bottom: 15px;
+  border-radius: 10px;
+}
+
 .modal-content.video-modal {
-  background: transparent;
+  background: rgba(0, 0, 0, 0.85);
 }
 
 .modal-content.text-modal {
-  background: rgba(0, 0, 0, 0.8);
-}
-
-.video-title {
-  color: #fff;
-  font-size: 24px;
-  margin-bottom: 10px;
-  padding: 10px;
+  background: rgba(0, 0, 0, 0.85);
 }
 
 .modal video {
@@ -192,6 +221,23 @@ button:hover {
 }
 
 @media (max-width: 768px) {
+  header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 10px;
+    left: 0;
+    width: 100%; /* Делаем ширину на 100% экрана */
+    z-index: 10;
+  }
+
+  .logo {
+    margin-top: 7vh;
+    width: 50vw;
+    max-width: 50vw;
+  }
+
   .controls {
     position: fixed;
     right: 10px;
@@ -224,9 +270,13 @@ button:hover {
     object-fit: cover;
   }
 
-  .point {
-    width: 40px;
-    height: 40px;
-    background-size: cover;
+  .point.red {
+    width: 7vw; /* Больше для видео на мобильных устройствах */
+    height: 7vw;
+  }
+
+  .point.blue {
+    width: 5vw; /* Меньше для текста на мобильных устройствах */
+    height: 5vw;
   }
 }

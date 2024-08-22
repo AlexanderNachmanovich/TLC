@@ -8,6 +8,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const modalVideo = document.getElementById("modal-video");
   const videoTitle = document.getElementById("video-title");
   const modalText = document.getElementById("modal-text");
+  const modalImage = document.getElementById("modal-image");
   const closeBtn = document.querySelector(".close");
   const clickSound = document.getElementById("click-sound");
   const zoomInBtn = document.getElementById("zoom-in");
@@ -43,6 +44,7 @@ document.addEventListener("DOMContentLoaded", () => {
         modalVideo.src = `images/${videoFile}`;
         modalVideo.style.display = "block";
         modalText.style.display = "none";
+        modalImage.style.display = "none";
         modalVideo.play().catch((error) => {
           console.error("Error attempting to play the video:", error);
         });
@@ -52,6 +54,7 @@ document.addEventListener("DOMContentLoaded", () => {
         modalVideo.style.display = "none";
         modalText.style.display = "block";
         modalText.textContent = text;
+        modalImage.style.display = "none";
       }
       modal.classList.add("show");
     });
@@ -70,11 +73,14 @@ document.addEventListener("DOMContentLoaded", () => {
     modalVideo.pause();
     modalVideo.src = "";
     modalText.textContent = "";
+    modalImage.src = "";
   }
 
   function setPosition(point, x, y) {
-    point.style.left = `${x}%`;
-    point.style.top = `${y}%`;
+    const width = point.offsetWidth / 2;
+    const height = point.offsetHeight / 2;
+    point.style.left = `calc(${x}% - ${width}px)`;
+    point.style.top = `calc(${y}% - ${height}px)`;
   }
 
   mapContainer.addEventListener("mousedown", (e) => {
@@ -179,6 +185,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function updateTransform() {
     imageWrapper.style.transform = `translate(-50%, -50%) scale(${scale})`;
+
+    // Проверка и ограничение масштаба
+    if (scale <= minScale) {
+      scale = minScale;
+    } else if (scale >= maxScale) {
+      scale = maxScale;
+    }
+
     restrictPan();
   }
 
@@ -189,17 +203,27 @@ document.addEventListener("DOMContentLoaded", () => {
     let offsetX = 0;
     let offsetY = 0;
 
-    if (wrapperRect.left > containerRect.left) {
+    // Гарантируем, что обертка не выходит за границы контейнера
+    if (wrapperRect.width > containerRect.width) {
+      if (wrapperRect.left > containerRect.left) {
+        offsetX = containerRect.left - wrapperRect.left;
+      }
+      if (wrapperRect.right < containerRect.right) {
+        offsetX = containerRect.right - wrapperRect.right;
+      }
+    } else {
       offsetX = containerRect.left - wrapperRect.left;
     }
-    if (wrapperRect.right < containerRect.right) {
-      offsetX = containerRect.right - wrapperRect.right;
-    }
-    if (wrapperRect.top > containerRect.top) {
+
+    if (wrapperRect.height > containerRect.height) {
+      if (wrapperRect.top > containerRect.top) {
+        offsetY = containerRect.top - wrapperRect.top;
+      }
+      if (wrapperRect.bottom < containerRect.bottom) {
+        offsetY = containerRect.bottom - wrapperRect.bottom;
+      }
+    } else {
       offsetY = containerRect.top - wrapperRect.top;
-    }
-    if (wrapperRect.bottom < containerRect.bottom) {
-      offsetY = containerRect.bottom - wrapperRect.bottom;
     }
 
     imageWrapper.style.left = `${
